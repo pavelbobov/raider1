@@ -1,2 +1,2 @@
-# raider1
-Auto pilot code for "Raider of the Pacific" project
+# Raider1 
+Auto pilot code for ["Raider of the Pacific"](http://raiderofthepacific.blogspot.com) project.
