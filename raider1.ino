@@ -47,7 +47,6 @@ THE SOFTWARE.
 // Arduino Wire library is required if I2Cdev I2CDEV_ARDUINO_WIRE implementation
 // is used in I2Cdev.h
 #include "Wire.h"
-
 // I2Cdev, AK8975, and MPU6050 must be installed as libraries, or else the
 // .cpp/.h files for all classes must be in the include path of your project
 #include "I2Cdev.h"
@@ -68,6 +67,8 @@ THE SOFTWARE.
 
 #include <Adafruit_GPS.h>
 #include <SoftwareSerial.h>
+
+#include "geo.h"
 
 // If you're using a GPS module:
 // Connect the GPS Power pin to 5V
@@ -93,6 +94,8 @@ SoftwareSerial mySerial(3, 2);
 
 //HardwareSerial mySerial = Serial1;
 
+
+float calculateBearing(Point location, Point destination);
 
 Adafruit_GPS GPS(&mySerial);
 
@@ -121,6 +124,9 @@ float heading;
 
 #define LED_PIN 13
 bool blinkState = false;
+
+Point location;
+Point destination(20.784778, -155.996052);
 
 void setup()  
 {
@@ -288,6 +294,10 @@ void loop()                     // run over and over again
 
       Serial.print("True Course: ");
       Serial.println(GPS.angle, 4);
+      location.set(GPS.latitudeDegrees, GPS.longitudeDegrees);
+
+      Serial.print("Bearing to destination: ");
+      Serial.println(location.bearing(&destination), 4);
       
       Serial.print("Speed (knots): "); Serial.println(GPS.speed);
       Serial.print("Angle: "); Serial.println(GPS.angle);
@@ -296,3 +306,4 @@ void loop()                     // run over and over again
     }
   }
 }
+
