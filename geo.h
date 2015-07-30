@@ -11,5 +11,7 @@ class Point
   void set(float lat, float lon) ;
   
   //Computes bearing from this to the specified point
-  float bearing(Point* point);  
+  float bearing(Point* point);
+  //Computes distance from this to the specified point in meters (accuracy %0.5)
+  float distance(const Point* point) const;
 };
