@@ -56,7 +56,7 @@ float Point::bearing(Point* point)
   return (rad > 0 ? rad : (2 * M_PI + rad)) * 180.0 / M_PI;
 }
 
-float Point::distance(Point)
+float Point::distance(const Point* point) const
 {
   float f1 = this->latitude / 180.0 * M_PI;
   float f2 = point->latitude / 180.0 * M_PI;
