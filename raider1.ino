@@ -70,6 +70,18 @@ THE SOFTWARE.
 
 #include "geo.h"
 
+//Analog pins
+#define RUDDER_POT A0
+#define SAIL_POT   A1
+#define WIND_VANE  A2 
+#define I2C_SDA    A4
+#define I2C_SCL    A5
+
+//Digital pins
+#define GPS_RX     2
+#define GPS_TX     3
+#define LED_PIN 13
+
 // If you're using a GPS module:
 // Connect the GPS Power pin to 5V
 // Connect the GPS Ground pin to ground
@@ -86,7 +98,7 @@ THE SOFTWARE.
 
 // If using software serial, keep this line enabled
 // (you can change the pin numbers to match your wiring):
-SoftwareSerial mySerial(3, 2);
+SoftwareSerial mySerial(GPS_TX, GPS_RX);
 
 // If using hardware serial (e.g. Arduino Mega), comment out the
 // above SoftwareSerial line, and enable this line instead
@@ -118,7 +130,6 @@ MPU6050 accelgyro(0x68); // address = 0x68, the default, on MPU6050 EVB
 int16_t mx, my, mz;
 float heading;
 
-#define LED_PIN 13
 bool blinkState = false;
 
 Point location;
