@@ -39,6 +39,17 @@ float Point::bearing(const Point* point) const
   return (rad > 0 ? rad : (2 * M_PI + rad)) * radToDeg;
 }
 
+float sqr(float v)
+{
+  return v * v;
+}
+
+float haversine(float f)
+{
+  //haversine(φ) = sin²(φ/2) = (1 - cos(φ)) / 2
+  return sqr(sin(f * 0.5));
+}
+
 float Point::distance(const Point* point) const
 {
   //Haversine formula from http://www.movable-type.co.uk/scripts/latlong.html
@@ -49,7 +60,7 @@ float Point::distance(const Point* point) const
   float f2 = point->latitude * degToRad;
   float dl = (point->longitude - this->longitude) * degToRad;
   float df = f2 - f1;
-  float a = sqrt(sin(df * 0.5)) + cos(f1) * cos(f2) * sqrt(sin(dl * 0.5));
+  float a = haversine(df) + cos(f1) * cos(f2) * haversine(dl);
   float c = 2 * atan2(sqrt(a), sqrt(1.0 - a));
   return earthR * c;
 }
