@@ -78,9 +78,14 @@ THE SOFTWARE.
 #define I2C_SCL    A5
 
 //Digital pins
-#define GPS_RX     2
-#define GPS_TX     3
-#define LED_PIN 13
+#define RUDDER_PWM       3  //Motor Shield Channel A
+#define GPS_RX           4
+#define GPS_TX           5
+#define SAIL_PWM         11 //Motor Shield Channel B
+#define RUDDER_DIRECTION 12 //Motor Shield Channel A
+#define SAIL_DIRECTION   13 //Motor Shield Channel B
+
+#define LED_PIN          10       
 
 // If you're using a GPS module:
 // Connect the GPS Power pin to 5V
@@ -193,6 +198,17 @@ void setup()
   pinMode(LED_PIN, OUTPUT);
   
   delay(1000);
+  
+  float dest1[3], dest2[3];
+  magcalMPU9250(dest1, dest2);
+  Serial.println("Soft irons:");
+  Serial.println(dest1[0]);
+  Serial.println(dest1[1]);
+  Serial.println(dest1[2]);
+  Serial.println("Hard irons:");
+  Serial.println(dest2[0]);
+  Serial.println(dest2[1]);
+  Serial.println(dest2[2]);
 }
 
 
@@ -231,8 +247,9 @@ void loop()                     // run over and over again
 
   // display tab-separated magnetometer x/y/z values
   Serial.print("mag:\t");
-  mx += 55;
-  my -= 50;
+  mx += 62;
+  my -= 101;
+  mz -= 112;
 
   Serial.print(mx); Serial.print("\t");
   Serial.print(my); Serial.print("\t");
@@ -313,4 +330,48 @@ void loop()                     // run over and over again
     }
   }
 }
+
+void magcalMPU9250(float * dest1, float * dest2) 
+ {
+   uint16_t ii = 0, sample_count = 0;
+   int32_t mag_bias[3] = {0, 0, 0}, mag_scale[3] = {0, 0, 0};
+   int16_t mag_max[3] = {0xF000, 0xF000, 0xF000}, mag_min[3] = {0x7FFF, 0x7FFF, 0x7FFF}, mag_temp[3] = {0, 0, 0};
+  
+   Serial.println("Mag Calibration: Wave device in a figure eight until done!");
+   delay(4000);
+  
+   sample_count = 128;
+   for(ii = 0; ii < sample_count; ii++) {
+     //MPU9250readMagData(mag_temp);  // Read the mag data   
+     mag.getHeading(mag_temp, mag_temp + 1, mag_temp + 2);
+     for (int jj = 0; jj < 3; jj++) {
+      if(mag_temp[jj] > mag_max[jj]) mag_max[jj] = mag_temp[jj];
+      if(mag_temp[jj] < mag_min[jj]) mag_min[jj] = mag_temp[jj];
+     }
+     delay(135);  // at 8 Hz ODR, new mag data is available every 125 ms
+   }
+  
+  // Get hard iron correction
+   dest1[0]  = (mag_max[0] + mag_min[0])/2;  // get average x mag bias in counts
+   dest1[1]  = (mag_max[1] + mag_min[1])/2;  // get average y mag bias in counts
+   dest1[2]  = (mag_max[2] + mag_min[2])/2;  // get average z mag bias in counts
+  
+   //dest1[0] = (float) mag_bias[0]*MPU9250mRes*MPU9250magCalibration[0];  // save mag biases in G for main program
+   //dest1[1] = (float) mag_bias[1]*MPU9250mRes*MPU9250magCalibration[1];   
+   //dest1[2] = (float) mag_bias[2]*MPU9250mRes*MPU9250magCalibration[2];  
+  
+  // Get soft iron correction estimate
+   mag_scale[0]  = (mag_max[0] - mag_min[0])/2;  // get average x axis max chord length in counts
+   mag_scale[1]  = (mag_max[1] - mag_min[1])/2;  // get average y axis max chord length in counts
+   mag_scale[2]  = (mag_max[2] - mag_min[2])/2;  // get average z axis max chord length in counts
+  
+   float avg_rad = mag_scale[0] + mag_scale[1] + mag_scale[2];
+   avg_rad /= 3.0;
+  
+   dest2[0] = avg_rad/((float)mag_scale[0]);
+   dest2[1] = avg_rad/((float)mag_scale[1]);
+   dest2[2] = avg_rad/((float)mag_scale[2]);
+  
+   Serial.println("Mag Calibration done!");
+ }
 
