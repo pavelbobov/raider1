@@ -199,16 +199,16 @@ void setup()
   
   delay(1000);
   
-  float dest1[3], dest2[3];
-  magcalMPU9250(dest1, dest2);
-  Serial.println("Soft irons:");
-  Serial.println(dest1[0]);
-  Serial.println(dest1[1]);
-  Serial.println(dest1[2]);
-  Serial.println("Hard irons:");
-  Serial.println(dest2[0]);
-  Serial.println(dest2[1]);
-  Serial.println(dest2[2]);
+ // float dest1[3], dest2[3];
+ // magcalMPU9250(dest1, dest2);
+ // Serial.println("Soft irons:");
+ // Serial.println(dest1[0]);
+ // Serial.println(dest1[1]);
+ // Serial.println(dest1[2]);
+ // Serial.println("Hard irons:");
+ // Serial.println(dest2[0]);
+ // Serial.println(dest2[1]);
+ // Serial.println(dest2[2]);
 }
 
 
