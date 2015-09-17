@@ -331,6 +331,7 @@ void loop()                     // run over and over again
   }
 }
 
+/*
 void magcalMPU9250(float * dest1, float * dest2) 
  {
    uint16_t ii = 0, sample_count = 0;
@@ -374,4 +375,4 @@ void magcalMPU9250(float * dest1, float * dest2)
   
    Serial.println("Mag Calibration done!");
  }
-
+*/
