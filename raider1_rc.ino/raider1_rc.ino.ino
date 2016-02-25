@@ -1,5 +1,5 @@
 /*
- * Raider Of The Pacific
+ * Radio control Arduino sketch for "Raider Of The Pacific" project
  http://www.paider1.com
 
  */
